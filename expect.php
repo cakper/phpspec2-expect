@@ -70,11 +70,13 @@ if (!function_exists('expect')) {
             foreach ($object->getMatchers() as $name => $matcher) {
                 if ($matcher instanceof MatcherInterface) {
                     $matchers->add($matcher);
-                } else {
+                } elseif(is_callable($matcher)) {
                     $matchers->add(new CallbackMatcher(
                         $name, $matcher, $presenter
                     ));
-                }
+                } else {
+                    throw new \RuntimeException('Custom matcher has to implement "PhpSpec\Matcher\MatcherInterface" or be a callable');
+		}
             }
         }
 
